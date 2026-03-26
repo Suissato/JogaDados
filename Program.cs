@@ -8,6 +8,8 @@ class Program
     public static int pontosJogadorDois = 0;
     public static string jogadorUm;
     public static string jogadorDois;
+    public static int rodadasTotais;
+    public static int rodadaDesempate = 1;
 
     static void Main(string[] args)
     {
@@ -18,6 +20,16 @@ class Program
     {
 
         Console.Clear();
+        Console.WriteLine("Digite o numero de rodadas: ");
+
+        do
+        {
+            while (!int.TryParse(Console.ReadLine(), out rodadasTotais))
+            {
+                Console.WriteLine("Valor inválido, tente novamente.");
+            }
+        } while (rodadasTotais > 5 || rodadasTotais == 0);
+
         Console.WriteLine("Digite o nome do primeiro jogador: ");
         jogadorUm = Console.ReadLine();
 
@@ -38,14 +50,7 @@ class Program
         Console.WriteLine("Inciando jogo!");
         Thread.Sleep(3000);
 
-        int rodada = 1;
-        for (var i = 0; i < 3; i++)
-        {
-            RodaDados(rodada);
-            Thread.Sleep(4000);
-            rodada++;
-        }
-
+        ComecaRodarDados();
         if (pontosJogadorUm > pontosJogadorDois)
         {
             Console.WriteLine($"Jogador {jogadorUm} ganhou!");
@@ -57,6 +62,20 @@ class Program
         else
         {
             Console.WriteLine("Empate!");
+            Thread.Sleep(500);
+            Console.WriteLine("Desempatando...");
+            Thread.Sleep(1000);
+            do
+            {
+                DesempataJogos();
+                rodadaDesempate++;
+            } while (pontosJogadorUm == pontosJogadorDois);
+
+            if (pontosJogadorUm > pontosJogadorDois)
+                Console.WriteLine($"Jogador {jogadorUm} ganhou!");
+            else
+                Console.WriteLine($"Jogador {jogadorDois} ganhou!");
+
         }
 
         Console.WriteLine($"Resultados: {jogadorUm} = {pontosJogadorUm} pontos!\n{jogadorDois} = {pontosJogadorDois} pontos!");
@@ -97,4 +116,22 @@ class Program
         int dado = random.Next(1, 7);
         return dado;
     }
+
+    static void ComecaRodarDados()
+    {
+        int rodada = 1;
+        for (var i = 0; i < rodadasTotais; i++)
+        {
+            RodaDados(rodada);
+            Thread.Sleep(4000);
+            rodada++;
+        }
+    }
+
+    static void DesempataJogos()
+    {
+        RodaDados(rodadaDesempate);
+        Thread.Sleep(4000);
+    }
+
 }
